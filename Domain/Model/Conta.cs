@@ -22,7 +22,8 @@ namespace APIBanco.Domain.Model
 
         public Conta()
         {
-            
+            //int numero;
+
         }
 
         public Conta(string numero, Cliente titular,long id)
@@ -34,6 +35,7 @@ namespace APIBanco.Domain.Model
 
         public Conta(string numero, int agencia, decimal saldo, long? titularId, Cliente titular, StatusServico status)
         {
+            Saldo = saldo;
             Numero = numero;
             Agencia = agencia;
             Saldo = saldo;

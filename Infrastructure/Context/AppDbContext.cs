@@ -22,6 +22,6 @@ namespace APIBanco.Infrastructure.Context
             builder.ApplyConfiguration(new ClienteMap());
             builder.ApplyConfiguration(new ContaMap());
             //builder.ApplyConfiguration(new TarifaMap());
-        }  
+        }
     }
 }

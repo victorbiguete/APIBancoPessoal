@@ -9,13 +9,13 @@ namespace APIBanco.Domain.Validators
         {
             RuleFor(x=>x).NotEmpty().WithMessage("Conta não pode estar vazia")
                 .NotNull().WithMessage("Conta não pode ser nula");
-
+            
             RuleFor(x => x.Status).NotEmpty().WithMessage("Status não pode estar vazia")
                 .NotNull().WithMessage("Status não pode ser nula");
-
+            
             RuleFor(x => x.Agencia).NotEmpty().WithMessage("Agencia não pode estar vazia")
                 .NotNull().WithMessage("Agencia não pode ser nula");
-
+            
             RuleFor(x=>x.Numero).NotEmpty().WithMessage("O Numero não pode estar vazio")
                 .NotNull().WithMessage("O Numero não pode ser nula");
 

@@ -64,6 +64,8 @@ namespace APIBanco.Domain.Model
 
             return true; 
         }
+
+        
     }
 }
 
