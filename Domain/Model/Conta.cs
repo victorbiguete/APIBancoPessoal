@@ -22,8 +22,7 @@ namespace APIBanco.Domain.Model
 
 
         public Conta()
-        {
-            //int numero;
+        { 
 
         }
 
