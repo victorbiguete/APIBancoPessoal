@@ -29,7 +29,6 @@ namespace APIBanco.Application.Controllers
             try
             {
                 var userDTO = _mapper.Map<ClienteDTO>(clienteViewModel);
-                //var contaDTO = _mapper.Map<ContaDTO>();
                 var user = await _clienteService.Create(userDTO);
 
                 return Ok(new ResultViewModel
@@ -46,9 +45,62 @@ namespace APIBanco.Application.Controllers
             }
             catch(Exception e)
             {
-                //return StatusCode(500,Responses.ApplicationErrorMessage());
-                return BadRequest(e.Message);
+                return StatusCode(500,Responses.ApplicationErrorMessage(e.Message));
+                //return BadRequest(e.Message);
             }
         }
+
+        [HttpPut]
+        [Route("/api/v1/cliente/update")]
+        public async Task<IActionResult> Update([FromBody] UpdateClienteViewModel clienteUpdateDTO)
+        {
+            try
+            {
+                var clienteDTO = _mapper.Map<ClienteDTO>(clienteUpdateDTO);
+                var updateDTO = await _clienteService.Update(clienteDTO);
+
+                return Ok(new ResultViewModel
+                {
+                    Message = "Cliente atualizado com sucesso",
+                    Success = true,
+                    Data = updateDTO
+                });
+            }
+            catch (DomainException ex)
+            {
+                return BadRequest(Responses.DomainErrorMessage(ex.Message, ex.Errors));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, Responses.ApplicationErrorMessage(e.Message));
+            }
+        }
+
+        [HttpGet]
+        [Route("/api/v1/cliente/GetCliente")]
+        public async Task<IActionResult> GetAll()
+        {
+            try
+            {
+                var clientes = await _clienteService.GetAll();
+                //return clientes;
+                return Ok(new ResultViewModel
+                {
+                    Message = "Busca concluida com sucesso",
+                    Success = true,
+                    Data = clientes
+                });
+            }
+            catch(DomainException ex)
+            {
+                //return BadRequest(Responses.DomainErrorMessage(ex.Message,ex.Errors));
+                return null;
+            }
+            catch(Exception e)
+            {
+                return null;
+            }
+        }
+        
     }
 }

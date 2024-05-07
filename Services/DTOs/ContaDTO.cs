@@ -7,8 +7,7 @@ namespace APIBanco.Services.DTOs
     public class ContaDTO
     {
         public long Id { get; set; }
-        public string Numero { get; set; }
-        
+        public string Numero { get; set; }     
         public long? TitularId { get; set; }
         public virtual Cliente Titular { get; set; }
         
@@ -23,5 +22,7 @@ namespace APIBanco.Services.DTOs
             TitularId = titularId;
             Titular = titular;
         }
+
+        
     }
 }

@@ -37,6 +37,8 @@ var autoMapperConfig = new MapperConfiguration(cfg =>
 {
     cfg.CreateMap<Cliente,ClienteDTO>().ReverseMap();
     cfg.CreateMap<CreateClienteViewModel,ClienteDTO>().ReverseMap();
+    cfg.CreateMap<UpdateClienteViewModel,ClienteDTO>().ReverseMap();
+    cfg.CreateMap<Cliente,ClienteUpdateDTO>().ReverseMap();
 
     cfg.CreateMap<Conta,ContaDTO>().ReverseMap();
 });

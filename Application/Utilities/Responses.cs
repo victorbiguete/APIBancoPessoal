@@ -4,11 +4,11 @@ namespace APIBanco.Application.Utilities
 {
     public static class Responses
     {
-        public static ResultViewModel ApplicationErrorMessage()
+        public static ResultViewModel ApplicationErrorMessage(string message)
         {
             return new ResultViewModel
             {
-                Message = "Ocorreu algum erro interno na aplicação, por favor tente novamente",
+                Message = message,
                 Success = false,
                 Data = null
             };

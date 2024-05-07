@@ -11,6 +11,6 @@ namespace APIBanco.Services.Interfaces
         Task<ContaDTO> Get(long id);
         Task<ContaDTO> GetByConta(string numero);
         Task<List<ContaDTO>> SearchByContaByCPF(string cpf);
-
+        Task<List<ContaDTO>> GetAll();
     }
 }

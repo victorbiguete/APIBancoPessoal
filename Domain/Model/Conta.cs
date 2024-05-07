@@ -6,6 +6,7 @@ using APIBanco.Services.Services;
 using Microsoft.IdentityModel.Tokens;
 using APIBanco.Services.Interfaces;
 using APIBanco.Services.DTOs;
+using System.Runtime.CompilerServices;
 
 namespace APIBanco.Domain.Model
 {
@@ -30,16 +31,6 @@ namespace APIBanco.Domain.Model
             Numero = numero;  
             Titular = titular;
             TitularId = id;
-        }
-
-        public Conta(string numero, int agencia, decimal saldo, long? titularId, Cliente titular, StatusServico status)
-        {
-            Numero = numero;
-            Agencia = agencia;
-            Saldo = saldo;
-            TitularId = titularId;
-            Titular = titular;
-            Status = status;
         }
 
         public bool Sacar(decimal valor)
@@ -73,6 +64,24 @@ namespace APIBanco.Domain.Model
                 return true;
             }
             return false;
+        }
+
+        public static void StatusConta(int status,Conta conta)
+        {
+            switch (status)
+            {
+                case 1: conta.Status = StatusServico.Ativo;
+                    break;
+                case 2:
+                    conta.Status = StatusServico.Inativo; ;
+                    break;
+                case 3:
+                    conta.Status= StatusServico.Bloqueado;
+                    break;
+                case 0:
+                    conta.Status = StatusServico.Encerrado;
+                    break;
+            }
         }
 
         //TODO

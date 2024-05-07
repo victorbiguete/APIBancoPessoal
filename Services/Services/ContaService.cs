@@ -84,14 +84,16 @@ namespace APIBanco.Services.Services
 
         public async Task<ContaDTO> Update(ContaDTO contaDTO)
         {
-            var contaExist = await _contaRepositoyLeitura.Get(contaDTO.Id);
+            var contaExist = await _contaRepositoyLeitura.GetByConta(contaDTO.Numero);
 
             if (contaExist == null)
                 throw new DomainException("Não foi possivel localizar nenhuma conta");
 
+            
+
             var conta = _mapper.Map<Conta>(contaExist);
             conta.Validate();
-
+            Conta.StatusConta(0, conta);
             var contaUpdate = await _contaRepositoyGravacao.Update(conta);
 
             return _mapper.Map<ContaDTO>(contaUpdate);
@@ -113,6 +115,12 @@ namespace APIBanco.Services.Services
             } while (contaExist != null);
 
             return numeroConta;
+        }
+
+        public async Task<List<ContaDTO>> GetAll()
+        {
+            var conta = await _contaRepositoyLeitura.GetAll();
+            return _mapper.Map<List<ContaDTO>>(conta);
         }
     }
 }

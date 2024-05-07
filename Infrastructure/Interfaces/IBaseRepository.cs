@@ -8,6 +8,6 @@ namespace APIBanco.Infrastructure.Interfaces
         Task<T> Update(T obj);
         Task Delete(long id);
         Task<T> Get(long id);
-        Task<List<T>> GetAll ();
+        Task<List<T>> GetAll();
     }
 }
