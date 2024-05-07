@@ -37,8 +37,6 @@ namespace APIBanco.Services.Services
                 throw new DomainException("Já existe um usuario cadastrado com esse CPF");
             }
 
-            
-
             var user = _mapper.Map<Cliente>(clienteDTO);
             user.Validate();
             var userCreated = await _clienteRepository.Create(user);
@@ -50,14 +48,6 @@ namespace APIBanco.Services.Services
                 _clienteRepository.Delete(userCreated.Id);
                 throw new DomainException("Erro durante a criação da conta");
             }
-
-            //var conta = _mapper.Map<Conta>(contaDTO);
-            //conta.Validate();
-
-            //var contaCreated = await _contaRepositoy.Create(conta);
-
-            var userCreated = await _clienteRepository.Create(user);
-
             return _mapper.Map<ClienteDTO>(userCreated);
         }
 
