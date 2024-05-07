@@ -32,16 +32,16 @@ namespace APIBanco.Services.Services
                 var contaDTO = new ContaDTO(numeroConta, cliente.Id, cliente);
 
                 var conta = _mapper.Map<Conta>(contaDTO);
-                conta.Validate();
-                
+            conta.Validate();
+
                 var contaCreated = await _contaRepositoyGravacao.Create(conta);
-                return _mapper.Map<ContaDTO>(contaCreated);
-            }
+            return _mapper.Map<ContaDTO>(contaCreated);
+        }
             catch (Exception ex)
             {
                 throw new DomainException("Houve um erro durante a criação da conta");
             }
-            
+
         }
 
         public async Task Delete(long id)

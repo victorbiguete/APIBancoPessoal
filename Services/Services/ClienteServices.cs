@@ -22,8 +22,8 @@ namespace APIBanco.Services.Services
 
         public async Task<ClienteDTO> Create(ClienteDTO clienteDTO)
         {
-            var userExists = await _clienteRepository.GetByEmail(clienteDTO.Email);
-
+            var userExists = await _clienteRepository.GetByEmail(clienteDTO.Email);    
+           
 
             if (userExists != null)
             {
@@ -56,6 +56,7 @@ namespace APIBanco.Services.Services
 
             //var contaCreated = await _contaRepositoy.Create(conta);
 
+            var userCreated = await _clienteRepository.Create(user);
 
             return _mapper.Map<ClienteDTO>(userCreated);
         }

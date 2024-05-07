@@ -23,7 +23,8 @@ namespace APIBanco.Domain.Model
 
         public Conta()
         {
-            
+            //int numero;
+
         }
 
         public Conta(string numero, Cliente titular,long id)
