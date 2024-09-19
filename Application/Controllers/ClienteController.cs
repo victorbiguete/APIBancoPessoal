@@ -5,6 +5,8 @@ using APIBanco.Domain.Model;
 using APIBanco.Services.DTOs;
 using APIBanco.Services.Interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,6 +25,7 @@ namespace APIBanco.Application.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("/api/v1/cliente/create")]
         public async Task<IActionResult> Create([FromBody] CreateClienteViewModel clienteViewModel)
         {
@@ -51,6 +54,7 @@ namespace APIBanco.Application.Controllers
         }
 
         [HttpPut]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("/api/v1/cliente/update")]
         public async Task<IActionResult> Update([FromBody] UpdateClienteViewModel clienteUpdateDTO)
         {
@@ -77,23 +81,18 @@ namespace APIBanco.Application.Controllers
         }
 
         [HttpGet]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("/api/v1/cliente/GetCliente")]
         public async Task<IActionResult> GetAll()
         {
             try
             {
                 var clientes = await _clienteService.GetAll();
-                //return clientes;
-                return Ok(new ResultViewModel
-                {
-                    Message = "Busca concluida com sucesso",
-                    Success = true,
-                    Data = clientes
-                });
+                
+                return Ok(clientes);
             }
             catch(DomainException ex)
             {
-                //return BadRequest(Responses.DomainErrorMessage(ex.Message,ex.Errors));
                 return null;
             }
             catch(Exception e)

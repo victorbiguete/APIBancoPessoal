@@ -12,9 +12,9 @@ namespace APIBanco.Application.ViewModel
         public string Nome { get; private set; }
 
         [Required]
-        [Length(14, 14, ErrorMessage = "CPF está do tamanho errado")]
+        [Length(11, 14, ErrorMessage = "CPF está do tamanho errado")]
         public string Cpf { get; private set; }
-        //public virtual Conta Contas { get; set; }
+        
         public decimal? Renda { get; private set; }
 
         [Required]

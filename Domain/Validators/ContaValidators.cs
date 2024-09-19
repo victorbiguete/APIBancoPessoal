@@ -21,9 +21,6 @@ namespace APIBanco.Domain.Validators
 
             RuleFor(x=>x.Saldo).NotNull().WithMessage("Saldo não pode ser nula");
 
-            RuleFor(x=>x.Titular).NotEmpty().WithMessage("Titular não pode estar vazia")
-                .NotNull().WithMessage("Titular não pode ser nula");
-
             RuleFor(x=>x.TitularId).NotEmpty().WithMessage("Titular ID não pode estar vazia")
                 .NotNull().WithMessage("Titular ID não pode ser nula");
         }    

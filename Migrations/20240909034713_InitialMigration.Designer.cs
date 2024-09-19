@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APIBanco.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240409041627_InitialMigration")]
+    [Migration("20240909034713_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace APIBanco.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.3")
+                .HasAnnotation("ProductVersion", "8.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -35,8 +35,8 @@ namespace APIBanco.Migrations
 
                     b.Property<string>("Cpf")
                         .IsRequired()
-                        .HasMaxLength(11)
-                        .HasColumnType("VARCHAR(11)")
+                        .HasMaxLength(14)
+                        .HasColumnType("VARCHAR(14)")
                         .HasColumnName("cpf");
 
                     b.Property<DateTime>("DataNascimento")
@@ -100,14 +100,13 @@ namespace APIBanco.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<long?>("TitularId")
+                    b.Property<long>("TitularId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TitularId")
-                        .IsUnique()
-                        .HasFilter("[TitularId] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Conta", (string)null);
                 });
@@ -159,8 +158,10 @@ namespace APIBanco.Migrations
             modelBuilder.Entity("APIBanco.Domain.Model.Conta", b =>
                 {
                     b.HasOne("APIBanco.Domain.Model.Cliente", "Titular")
-                        .WithOne("Contas")
-                        .HasForeignKey("APIBanco.Domain.Model.Conta", "TitularId");
+                        .WithOne("conta")
+                        .HasForeignKey("APIBanco.Domain.Model.Conta", "TitularId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Titular");
                 });
@@ -174,7 +175,7 @@ namespace APIBanco.Migrations
 
             modelBuilder.Entity("APIBanco.Domain.Model.Cliente", b =>
                 {
-                    b.Navigation("Contas")
+                    b.Navigation("conta")
                         .IsRequired();
                 });
 

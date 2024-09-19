@@ -30,7 +30,7 @@ namespace APIBanco.Domain.Validators
 
             RuleFor(x => x.Cpf).NotEmpty().WithMessage("CPF não pode ser vazio")
                 .NotNull().WithMessage("CPF não pode ser nulo")
-                .Length(14,14).WithMessage("CPF está do tamanho errado");
+                .Length(11,11).WithMessage("CPF está do tamanho errado");
 
             RuleFor(x => x.DataNascimento).NotNull().WithMessage("Data de Nascimento não pode ser Nulo")
                 .NotEmpty().WithMessage("Data de Nascimento não pode estar vazio");

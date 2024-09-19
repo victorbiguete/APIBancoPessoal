@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using APIBanco.Services.Interfaces;
+using System.Text.Json.Serialization;
+using APIBanco.Security;
 
 namespace APIBanco.Services.DTOs
 {
@@ -15,7 +17,7 @@ namespace APIBanco.Services.DTOs
 
         [Required]
         public string Cpf { get; set; }
-        public virtual Conta Contas { get; set; }
+        
         public decimal? Renda { get;  set; }
 
         [Required]
@@ -31,6 +33,7 @@ namespace APIBanco.Services.DTOs
 
         [Required]
         [PasswordPropertyText]
+        [JsonIgnore]
         public string Password { get; set; }
 
         public ClienteDTO()
@@ -38,19 +41,16 @@ namespace APIBanco.Services.DTOs
             
         }
 
-        public ClienteDTO(long id, string nome, string cpf, Conta contas, decimal? renda, DateTime dataNascimento, DateTime? dataObito, string email, string password)
+        public ClienteDTO(long id, string nome, string cpf, decimal? renda, DateTime dataNascimento, DateTime? dataObito, string email, string password)
         {
             Id = id;
             Nome = nome;
             Cpf = cpf;
-            Contas = contas;
             Renda = renda;
             DataNascimento = dataNascimento;
             DataObito = dataObito;
             Email = email;
-            Password = password;
+            Password = BCryptPassword.HashPassword(password);
         }
-
-       
     }
 }

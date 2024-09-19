@@ -5,7 +5,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using APIBanco.Infrastructure.Context;
-using APIBanco.Application.Security;
 using Asp.Versioning;
 using APIBanco.Infrastructure.Mappings;
 using APIBanco.Services.Interfaces;
@@ -17,7 +16,10 @@ using APIBanco.Domain.Model;
 using APIBanco.Services.DTOs;
 using APIBanco.Application.ViewModel;
 using System.Text.Json.Serialization;
-
+using APIBanco.Token;
+using EscNet.IoC.Cryptography;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -28,10 +30,36 @@ builder.Services.AddApiVersioning(options =>
 });
 builder.Services.AddSingleton(builder.Configuration);
 
+#region DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")),ServiceLifetime.Scoped);
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")),ServiceLifetime.Transient);
+#endregion
+
 
 builder.Services.AddControllers();
+
+#region JWT
+var secretKey = builder.Configuration["Jwt:Key"];
+
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(x =>
+{
+    x.RequireHttpsMetadata = false;
+    x.SaveToken = true;
+    x.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey)),
+    };
+});
+#endregion
+
 #region AutoMapper
 var autoMapperConfig = new MapperConfiguration(cfg =>
 {
@@ -51,7 +79,11 @@ builder.Services.AddScoped<IClienteService,ClienteServices>();
 
 builder.Services.AddScoped<IContaRepositoy,ContaRepository>();
 builder.Services.AddScoped<IContaService,ContaService>();
+
+builder.Services.AddScoped<ITokenGenerator,TokenGenerator>();
 #endregion
+
+
 
 builder.Services.AddControllersWithViews().AddJsonOptions(options =>
 {
@@ -60,6 +92,8 @@ builder.Services.AddControllersWithViews().AddJsonOptions(options =>
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+#region Swagger
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -67,9 +101,8 @@ builder.Services.AddSwaggerGen(options =>
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
     });
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
@@ -77,46 +110,27 @@ builder.Services.AddSwaggerGen(options =>
                 Reference = new OpenApiReference
                 {
                     Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer" 
+                    Id = "Bearer"
                 },
-                Scheme = "oauth2",
-                Name = "Bearer",
-                In = ParameterLocation.Header,
             },
-            new List<string>()
+            new string[]{}
         }
     });
 });
+#endregion
+
 builder.Services.AddAutoMapper(typeof(DomainToDTOMapping));
 builder.Services
     .AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
-
-
-//JWT
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(options =>
-        {
-            options.RequireHttpsMetadata = false;
-            options.SaveToken = true;
-            options.TokenValidationParameters = new()
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                ValidAudience = builder.Configuration["Jwt:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Key.Secret))
-            };
-        });
-
-
 builder.Services.AddDbContext<AppDbContext>(options=>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+#region Cryptography
+builder.Services.AddRijndaelCryptography(builder.Configuration["Cryptography:Key"]);
+#endregion
 
 var app = builder.Build();
 
@@ -128,6 +142,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

@@ -4,6 +4,7 @@ using APIBanco.Infrastructure.Interfaces;
 using APIBanco.Services.DTOs;
 using APIBanco.Services.Interfaces;
 using AutoMapper;
+using EscNet.Cryptography.Interfaces;
 
 namespace APIBanco.Services.Services
 {
@@ -12,6 +13,7 @@ namespace APIBanco.Services.Services
         private readonly IMapper _mapper;
         private readonly IClienteRepository _clienteRepository;
         private readonly IContaService _contaService;
+        private readonly IRijndaelCryptography _rijndaelCryptography;
 
         public ClienteServices(IMapper mapper, IClienteRepository clienteRepository, IContaService contaService)
         {

@@ -1,6 +1,7 @@
 ﻿using APIBanco.Domain.Model;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace APIBanco.Services.DTOs
 {
@@ -28,6 +29,7 @@ namespace APIBanco.Services.DTOs
 
         [Required]
         [PasswordPropertyText]
+        [JsonIgnore]
         public string Password { get; set; }
     }
 }

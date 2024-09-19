@@ -1,32 +1,54 @@
-﻿using APIBanco.Application.Security;
+﻿using APIBanco.Application.Utilities;
+using APIBanco.Application.ViewModel;
 using APIBanco.Domain.Model;
 using APIBanco.Infrastructure.Context;
+using APIBanco.Token;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIBanco.Application.Controllers
 {
+    [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IConfiguration _configuration;
+        private readonly ITokenGenerator _tokenGenerator;
 
-        public AuthController(AppDbContext context)
+        public AuthController(IConfiguration configuration, ITokenGenerator tokenGenerator)
         {
-            _context = context;
+            _configuration = configuration;
+            _tokenGenerator = tokenGenerator;
         }
 
         [HttpPost]
-        public IActionResult Auth(string username, string password)
+        [Route("/api/v1/auth/login")]
+        public IActionResult Auth([FromBody]LoginViewModel loginViewModel)
         {
-            //TODO
-            //Buscar no banco o usuario e senha correspondentes
-            //var User = _context.
-            if (username == "" && password == "")
+            try
             {
-                var token = TokenService.GenerateToken(new Conta());
-                return Ok(token);
-            }
+                //Trocar para Usuario e Senha do Usuario
+                var tokenLogin = _configuration["Jwt:Login"];
+                var tokenPassword = _configuration["Jwt:Password"];
 
-            return BadRequest("Usuario ou Senha Invalidos");
+                if (loginViewModel.Login.Equals(tokenLogin) && loginViewModel.Password.Equals(tokenPassword))
+                {
+                    return Ok(new ResultViewModel
+                    {
+                        Message = "Usuario autenticado com Sucesso !",
+                        Success = true,
+                        Data = new
+                        {
+                            Token = _tokenGenerator.GenerateToken(),
+                            TokenExpires = DateTime.UtcNow.AddHours(int.Parse(_configuration["Jwt:HoursToExpire"])),
+                        }
+                    });
+                }
+                else
+                    return StatusCode(401, Responses.UnauthorizedErrorMessage());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500,Responses.ApplicationErrorMessage(""));
+            }
         }
     }
 }

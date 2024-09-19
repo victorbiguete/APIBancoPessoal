@@ -32,13 +32,11 @@ namespace APIBanco.Infrastructure.Mappings
                 .HasColumnName("saldo")
                 .HasColumnType("DECIMAL");
 
-            builder.Property<long?>("TitularId")
+            builder.Property<long>("TitularId")
                 .HasColumnType("bigint");
 
             builder.HasIndex("TitularId")
                 .IsUnique();
-
-            
 
             builder.Property(x => x.Status)
                 .HasConversion<int>();

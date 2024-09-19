@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APIBanco.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240504051025_CriaçãoBanco")]
-    partial class CriaçãoBanco
+    [Migration("20240919031002_AddEnderecosMIgration")]
+    partial class AddEnderecosMIgration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.3")
+                .HasAnnotation("ProductVersion", "8.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -100,16 +100,91 @@ namespace APIBanco.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<long?>("TitularId")
+                    b.Property<long>("TitularId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TitularId")
-                        .IsUnique()
-                        .HasFilter("[TitularId] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Conta", (string)null);
+                });
+
+            modelBuilder.Entity("APIBanco.Domain.Model.EnderecoCliente", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("BIGINT");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Bairro")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("bairro");
+
+                    b.Property<int>("CEP")
+                        .HasColumnType("int")
+                        .HasColumnName("cep");
+
+                    b.Property<string>("Cidade")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("cidade");
+
+                    b.Property<string>("Complemento")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Endereco")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("endereco");
+
+                    b.Property<string>("UF")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("varchar(2)")
+                        .HasColumnName("uf");
+
+                    b.Property<string>("tipoCEP")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("tipocep");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EnderecoCliente", (string)null);
+                });
+
+            modelBuilder.Entity("APIBanco.Domain.Model.Lista_Endereco_Cliente", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("ClienteId")
+                        .HasColumnType("BIGINT");
+
+                    b.Property<long>("EnderecoId")
+                        .HasColumnType("BIGINT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClienteId")
+                        .IsUnique();
+
+                    b.HasIndex("EnderecoId")
+                        .IsUnique();
+
+                    b.ToTable("Lista_Endereco_Clientes");
                 });
 
             modelBuilder.Entity("APIBanco.Domain.Model.Servicos", b =>
@@ -159,10 +234,31 @@ namespace APIBanco.Migrations
             modelBuilder.Entity("APIBanco.Domain.Model.Conta", b =>
                 {
                     b.HasOne("APIBanco.Domain.Model.Cliente", "Titular")
-                        .WithOne("Contas")
-                        .HasForeignKey("APIBanco.Domain.Model.Conta", "TitularId");
+                        .WithOne("conta")
+                        .HasForeignKey("APIBanco.Domain.Model.Conta", "TitularId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Titular");
+                });
+
+            modelBuilder.Entity("APIBanco.Domain.Model.Lista_Endereco_Cliente", b =>
+                {
+                    b.HasOne("APIBanco.Domain.Model.Cliente", "cliente")
+                        .WithOne("lista_endereco_cliente")
+                        .HasForeignKey("APIBanco.Domain.Model.Lista_Endereco_Cliente", "ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("APIBanco.Domain.Model.EnderecoCliente", "Endereco")
+                        .WithOne("lista_endereco_cliente")
+                        .HasForeignKey("APIBanco.Domain.Model.Lista_Endereco_Cliente", "EnderecoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Endereco");
+
+                    b.Navigation("cliente");
                 });
 
             modelBuilder.Entity("APIBanco.Domain.Model.Servicos", b =>
@@ -174,7 +270,16 @@ namespace APIBanco.Migrations
 
             modelBuilder.Entity("APIBanco.Domain.Model.Cliente", b =>
                 {
-                    b.Navigation("Contas")
+                    b.Navigation("conta")
+                        .IsRequired();
+
+                    b.Navigation("lista_endereco_cliente")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("APIBanco.Domain.Model.EnderecoCliente", b =>
+                {
+                    b.Navigation("lista_endereco_cliente")
                         .IsRequired();
                 });
 

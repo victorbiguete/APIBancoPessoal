@@ -3,6 +3,7 @@ using APIBanco.Domain.Validators;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 namespace APIBanco.Domain.Model
 {
     public class Cliente : Base
@@ -14,9 +15,10 @@ namespace APIBanco.Domain.Model
         public string Nome { get; private set; }
 
         [Required]
-        [Length(14,14,ErrorMessage = "CPF está do tamanho errado")]
+        [Length(11,14,ErrorMessage = "CPF está do tamanho errado")]
         public string Cpf { get; private set; }
-        public virtual Conta Contas { get; set; }
+        
+
         public decimal? Renda { get; private set; }
 
         [Required]
@@ -36,13 +38,18 @@ namespace APIBanco.Domain.Model
         [Length(10,180,ErrorMessage ="Verifique se a senha esta nos padrões minimos e maximos exigitos")]
         public string Password { get; private set; }
 
+        [InverseProperty(nameof(Conta.Titular))]
+        public Conta conta { get; private set; }
+
+        [InverseProperty(nameof(Lista_Endereco_Cliente.cliente))]
+        public Lista_Endereco_Cliente lista_endereco_cliente { get; private set; }
+
         protected Cliente() { }
 
-        public Cliente(string nome, string cpf, Conta contas, decimal? renda, DateTime dataNascimento, DateTime? dataObito, string email, string password)
+        public Cliente(string nome, string cpf, decimal? renda, DateTime dataNascimento, DateTime? dataObito, string email, string password)
         {
             Nome = nome;
             Cpf = cpf;
-            Contas = contas;
             Renda = renda;
             DataNascimento = dataNascimento;
             DataObito = dataObito;

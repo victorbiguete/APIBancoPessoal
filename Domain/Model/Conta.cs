@@ -7,6 +7,8 @@ using Microsoft.IdentityModel.Tokens;
 using APIBanco.Services.Interfaces;
 using APIBanco.Services.DTOs;
 using System.Runtime.CompilerServices;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace APIBanco.Domain.Model
 {
@@ -15,9 +17,16 @@ namespace APIBanco.Domain.Model
         
         public string Numero { get; set; }
         public int Agencia { get; set; } = 1;
+
+        [Range(0, double.MaxValue)]
         public decimal Saldo { get; private set; } = 0;
-        public long? TitularId { get; set; }
-        public virtual Cliente Titular { get; set; }
+
+        [ForeignKey("Titular")]
+        public long TitularId { get; set; }
+
+        [InverseProperty(nameof(Cliente.conta))]
+        public Cliente Titular { get; set; }
+
         public StatusServico Status { get; set; } = StatusServico.Ativo;
 
 
@@ -26,10 +35,9 @@ namespace APIBanco.Domain.Model
 
         }
 
-        public Conta(string numero, Cliente titular,long id)
+        public Conta(string numero, long id)
         {  
             Numero = numero;  
-            Titular = titular;
             TitularId = id;
         }
 

@@ -5,6 +5,7 @@ using APIBanco.Domain.Model;
 using APIBanco.Services.DTOs;
 using APIBanco.Services.Interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +23,7 @@ namespace APIBanco.Application.Controllers
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("/api/v1/contas/GetAccount")]
         public async Task<IActionResult> GetAccount()
         {
@@ -40,6 +42,7 @@ namespace APIBanco.Application.Controllers
         }
 
         [HttpPut]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("api/v1/conta/encerrarconta")]
         public async Task<IActionResult> EncerrarConta(string numero)
         {

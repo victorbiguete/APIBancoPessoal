@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace APIBanco.Migrations
 {
     /// <inheritdoc />
-    public partial class CriaçãoBanco : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -53,7 +53,7 @@ namespace APIBanco.Migrations
                     numero = table.Column<string>(type: "VARCHAR(10)", maxLength: 10, nullable: false),
                     agencia = table.Column<int>(type: "int", maxLength: 1, nullable: false),
                     saldo = table.Column<decimal>(type: "DECIMAL(18,0)", nullable: false),
-                    TitularId = table.Column<long>(type: "bigint", nullable: true),
+                    TitularId = table.Column<long>(type: "bigint", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -63,7 +63,8 @@ namespace APIBanco.Migrations
                         name: "FK_Conta_Cliente_TitularId",
                         column: x => x.TitularId,
                         principalTable: "Cliente",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -90,8 +91,7 @@ namespace APIBanco.Migrations
                 name: "IX_Conta_TitularId",
                 table: "Conta",
                 column: "TitularId",
-                unique: true,
-                filter: "[TitularId] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Servicos_TarifaId",
