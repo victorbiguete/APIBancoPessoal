@@ -22,14 +22,5 @@ namespace APIBanco.Infrastructure.Repositories
                 .FirstOrDefaultAsync();
             return endereco;
         }
-
-        public async Task<EnderecoCliente> GetById(int id)
-        {
-            var endereco = await _context.enderecoClientes
-                .AsNoTracking()
-                .Where(x=>x.Id==id)
-                .FirstOrDefaultAsync();
-            return endereco;
-        }
     }
 }

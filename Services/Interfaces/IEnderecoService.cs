@@ -6,7 +6,8 @@ namespace APIBanco.Services.Interfaces
     {
         Task<EnderecoDTO> Create(EnderecoDTO enderecoDTO);
         Task<EnderecoDTO> Update(EnderecoDTO enderecoDTO);
-        Task Remove(long id);
+        Task<bool> Remove(long id);
         Task<EnderecoDTO> Get(long id);
+        Task<EnderecoDTO> GetByCEP(int cep);
     }
 }

@@ -111,13 +111,6 @@ namespace APIBanco.Services.Services
 
         public async Task<ClienteDTO> Update(ClienteDTO clienteDTO)
         {
-            var userExists = await _clienteRepository.Get(clienteDTO.Id);
-            
-            if(userExists == null)
-            {
-                throw new DomainException("Cliente não encontrado");
-            }
-
             var user = _mapper.Map<Cliente>(clienteDTO);
             user.Validate();
 

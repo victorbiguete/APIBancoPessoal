@@ -30,23 +30,77 @@ namespace APIBanco.Services.Services
             }
             catch(Exception ex)
             {
-                throw new DomainException("Houve um erro durante a criação da conta:"+ex.Message);
+                throw new DomainException("Ocorreu um erro durante o CREATE de ENDERECO, por favor verifique: " + ex.Message);
             }
         }
 
-        public Task<EnderecoDTO> Get(long id)
+        public async Task<EnderecoDTO> Get(long id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var endereco = await _enderecoRepository.Get(id);
+
+                if(endereco == null)
+                {
+                    return null;
+                }
+                return _mapper.Map<EnderecoDTO>(endereco);
+            }
+            catch (Exception ex)
+            {
+                throw new DomainException("Ocorreu um erro durante o GET de ENDERECO, por favor verifique: " + ex.Message);
+            }
         }
 
-        public Task Remove(long id)
+        public async Task<EnderecoDTO> GetByCEP(int cep)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var endereco = await _enderecoRepository.GetByCEP(cep);
+
+                if (endereco == null)
+                    return null;
+
+                return _mapper.Map<EnderecoDTO>(endereco);
+            }
+            catch(Exception ex)
+            {
+                throw new DomainException("Ocorreu um erro durante o GETBYCEP de ENDERECO, por favor verifique: " + ex.Message);
+            }
         }
 
-        public Task<EnderecoDTO> Update(EnderecoDTO enderecoDTO)
+        public async Task<bool> Remove(long id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var endereco = await _enderecoRepository.Get(id);
+                if(endereco != null)
+                {
+                    await _enderecoRepository.Delete(id );
+                    return true;
+                }
+                return false;
+            }
+            catch(Exception ex)
+            {
+                throw new DomainException("Ocorreu um erro durante o REMOVE de ENDERECO, por favor verifique: " + ex.Message);
+            }
+        }
+
+        public async Task<EnderecoDTO> Update(EnderecoDTO enderecoDTO)
+        {
+            try
+            {
+                var enderecoNovo = _mapper.Map<EnderecoCliente>(enderecoDTO);
+                enderecoNovo.Validate();
+                var enderecoUpdate = await _enderecoRepository.Update(enderecoNovo);
+                
+                return _mapper.Map<EnderecoDTO>(enderecoUpdate);
+            }
+            catch(Exception ex)
+            {
+                throw new DomainException("Ocorreu um erro durante o UPDATE de ENDERECO, por favor verifique: " + ex.Message);
+            }
         }
     }
 }
