@@ -2,6 +2,7 @@
 using APIBanco.Application.ViewModel;
 using APIBanco.Core.Exceptions;
 using APIBanco.Domain.Model;
+using APIBanco.Infrastructure.Interfaces;
 using APIBanco.Services.DTOs;
 using APIBanco.Services.Interfaces;
 using AutoMapper;
@@ -16,23 +17,27 @@ namespace APIBanco.Application.Controllers
     public class ClienteController : ControllerBase
     {
         private readonly IClienteService _clienteService;
+        private readonly IEnderecoRepository _enderecoRepository;
         private readonly IMapper _mapper;
 
-        public ClienteController(IClienteService clienteService, IMapper mapper)
+        public ClienteController(IClienteService clienteService,IEnderecoRepository enderecoRepository, IMapper mapper)
         {
             _clienteService = clienteService;
+            _enderecoRepository = enderecoRepository;
             _mapper = mapper;
         }
 
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("/api/v1/cliente/create")]
-        public async Task<IActionResult> Create([FromBody] CreateClienteViewModel clienteViewModel)
+        public async Task<IActionResult> Create([FromBody] ClientCreateModel Model)//([FromBody] CreateClienteViewModel clienteViewModel)
         {
             try
             {
-                var userDTO = _mapper.Map<ClienteDTO>(clienteViewModel);
+                var userDTO = _mapper.Map<ClienteDTO>(Model.Cliente);
+                var enderecoDTO = _mapper.Map<EnderecoDTO>(Model.Endereco);
                 var user = await _clienteService.Create(userDTO);
+                var endereco = await _enderecoSer.Create(enderecoDTO);
 
                 return Ok(new ResultViewModel
                 {
