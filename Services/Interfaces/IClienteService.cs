@@ -11,6 +11,8 @@ namespace APIBanco.Services.Interfaces
         Task<List<ClienteDTO>> GetAll();
         Task<List<ClienteDTO>> SearchByName(string name);
         Task<List<ClienteDTO>> SearchByUsername(string username);
+        Task<List<ClienteDTO>> SearchByEmail(string email);
         Task<ClienteDTO> GetByEmail(string name);
+        Task<ClienteDTO> GetByCPF(string cpf);
     }
 }

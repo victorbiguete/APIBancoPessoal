@@ -30,8 +30,6 @@ namespace APIBanco.Infrastructure.Repositories
             return user;
         }
 
-       
-
         public async Task<List<Cliente>> SearchByEmail(string email)
         {
             var user = await _context.Clientes

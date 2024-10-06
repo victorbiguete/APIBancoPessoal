@@ -75,6 +75,23 @@ namespace APIBanco.Services.Services
             return _mapper.Map<List<ClienteDTO>>(allUser);
         }
 
+        public async Task<ClienteDTO> GetByCPF(string cpf)
+        {
+            try
+            {
+                var client = await _clienteRepository.GetByCPF(cpf);
+
+                if (client == null)
+                    return null;
+
+                return _mapper.Map<ClienteDTO>(client);
+            }
+            catch (Exception ex)
+            {
+                throw new DomainException("Ocorreu um erro durante GET BY CPF de CLIENTE SERVICE, por favor verifique: " + ex.Message);
+            }
+        }
+
         public async Task<ClienteDTO> GetByEmail(string email)
         {
             var userExist = await _clienteRepository.GetByEmail(email);
@@ -99,14 +116,51 @@ namespace APIBanco.Services.Services
             await _clienteRepository.Delete(id);
         }
 
-        public Task<List<ClienteDTO>> SearchByName(string name)
+        public async Task<List<ClienteDTO>> SearchByEmail(string email)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var lista = await _clienteRepository.SearchByEmail(email);
+                if (lista == null)
+                    return null;
+                return _mapper.Map<List<ClienteDTO>>(lista);
+            }
+            catch (Exception ex)
+            {
+                throw new DomainException("Ocorreu um erro durante SEARCH BY EMAIL de CLIENTE SERVICE, por favor verifique: " + ex.Message);
+            }
         }
 
-        public Task<List<ClienteDTO>> SearchByUsername(string username)
+        public async Task<List<ClienteDTO>> SearchByName(string name)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var lista = await _clienteRepository.SearchByName(name);
+                if (lista == null)
+                    return null;
+                return _mapper.Map<List<ClienteDTO>>(lista);
+            }
+            catch (Exception ex)
+            {
+                throw new DomainException("Ocorreu um erro durante o SEARCH BY NAME de CLIENTE SERVICE, por favor verifique: " + ex.Message);
+            }
+        }
+
+        public async Task<List<ClienteDTO>> SearchByUsername(string username)
+        {
+            try
+            {
+                var lista = await _clienteRepository.SearchByUsername(username);
+
+                if (lista == null)
+                    return null;
+
+                return _mapper.Map<List<ClienteDTO>>(lista);
+            }
+            catch(Exception ex)
+            {
+                throw new DomainException("Ocorreu um erro durante o SEARCH BY USERNAME de CLIENTE SERVICE, por favor verifique: " + ex.Message);
+            }
         }
 
         public async Task<ClienteDTO> Update(ClienteDTO clienteDTO)
